@@ -35,5 +35,14 @@ router.post("/", async (req, res) => {
       .json({ message: "Failed to create task", error: err.message });
   }
 });
+// GET /api/tasks (Paste this right below your existing router.post block)
+router.get("/", async (req, res) => {
+    try {
+        const tasks = await Task.find();
+        res.status(200).json(tasks);
+    } catch (err) {
+        res.status(500).json({ message: "Server error while fetching tasks" });
+    }
+});
 
 module.exports = router;

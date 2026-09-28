@@ -1,19 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import './App.css'
 
 export default function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, text: 'Review morning emails & schedule', category: 'Work', completed: false, time: '09:00 AM' },
-    { id: 2, text: '30-minute workout session', category: 'Health', completed: true, time: '07:00 AM' },
-    { id: 3, text: 'Buy groceries for the week', category: 'Personal', completed: false, time: '05:30 PM' },
-  ])
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem('daily_planner_tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
   const [newTaskText, setNewTaskText] = useState('')
   const [newTaskCategory, setNewTaskCategory] = useState('Work')
   const [filter, setFilter] = useState('All')
+  const [newTaskTime, setNewTaskTime] = useState('12:00');
+  useEffect(() => {
+    localStorage.setItem('daily_planner_tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
-  const completedCount = tasks.filter(t => t.completed).length
+  const completedCount = tasks.filter(t => t.completed).length;
+  // Fetch tasks from your backend when the page loads
+  // Fetch tasks from your backend when the page loads
+// useEffect(() => {
+//   console.log("useEffect is running!");
+//   fetch("http://localhost:5000/api/tasks")
+//     .then((res) => res.json())
+//     .then((data) => {
+//       const formattedTasks = data.map(task => ({
+//         ...task,
+//         id: task._id,
+//         text: task.title,
+//         completed: task.completed || false,
+//         category: task.category || "Work",
+//         time: task.time || "12:00 PM"
+//       }));
+//       setTasks(formattedTasks);
+//     })
+//     .catch((err) => console.error("Error fetching tasks:", err));
+// }, []);
   const progressPercent = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0
+  const formatTime = (timeStr) => {
+    if (!timeStr) return "12:00 PM";
+    const [hourStr, minute] = timeStr.split(':');
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
+  };
 
   const handleAddTask = (e) => {
     e.preventDefault()
@@ -23,7 +54,7 @@ export default function App() {
       text: newTaskText,
       category: newTaskCategory,
       completed: false,
-      time: '12:00 PM',
+      time: formatTime(newTaskTime),
     }
     setTasks([newTask, ...tasks])
     setNewTaskText('')
@@ -75,6 +106,12 @@ export default function App() {
           <option value="Health">Health</option>
           <option value="Study">Study</option>
         </select>
+        {/* <--- PASTE THE TIME INPUT HERE: */}
+  <input 
+    type="time" 
+    value={newTaskTime} 
+    onChange={(e) => setNewTaskTime(e.target.value)} 
+  />
         <button type="submit">+ Add Task</button>
       </form>
 
