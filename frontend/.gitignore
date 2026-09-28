@@ -22,4 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< Updated upstream
 .env
+=======
+# .env files
+.env
+.env.*
+>>>>>>> Stashed changes
