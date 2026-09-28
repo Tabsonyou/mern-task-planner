@@ -10,6 +10,7 @@ export default function App() {
   const [newTaskCategory, setNewTaskCategory] = useState('Work')
   const [filter, setFilter] = useState('All')
   const [newTaskTime, setNewTaskTime] = useState('12:00');
+  const [newTaskDate, setNewTaskDate] = useState('')
   useEffect(() => {
     localStorage.setItem('daily_planner_tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -55,6 +56,7 @@ export default function App() {
       category: newTaskCategory,
       completed: false,
       time: formatTime(newTaskTime),
+      date: newTaskDate,
     }
     setTasks([newTask, ...tasks])
     setNewTaskText('')
@@ -111,6 +113,11 @@ export default function App() {
     type="time" 
     value={newTaskTime} 
     onChange={(e) => setNewTaskTime(e.target.value)} 
+  />
+  <input
+    type="date"
+    value={newTaskDate}
+    onChange={(e) => setNewTaskDate(e.target.value)}
   />
         <button type="submit">+ Add Task</button>
       </form>
